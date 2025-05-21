@@ -20,7 +20,7 @@ df = load_data()
 # These extra columns let us filter area in the three unit systems
 df["TOTAL_SQFT"] = df["TOTAL PLOT AREA IN SQ. FEET"]
 df["TOTAL_SQMT"] = df["TOTAL PLOT AREA IN SQ. MTR"]          # square-metres
-df["TOTAL_SQYD"] = df["TOTAL PLOT AREA IN SQ. YDS"] / 9.0               # square-yards
+df["TOTAL_SQYD"] = df["TOTAL PLOT AREA IN SQ. YDS"]              # square-yards
 
 # ---------------------------
 # SECTION 1 – Flexible Filters
