@@ -22,8 +22,10 @@ df["TOTAL_SQYD"] = df["TOTAL PLOT AREA IN SQ. YDS"]
 # Sidebar Clear Filter Button
 # ---------------------------------
 if st.button("🧹 Clear All Filters"):
-    st.cache_data.clear()
+    for key in st.session_state.keys():
+        del st.session_state[key]
     st.rerun()
+
 
 # ---------------------------------
 # Filters Section
