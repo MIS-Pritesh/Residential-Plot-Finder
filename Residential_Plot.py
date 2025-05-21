@@ -17,7 +17,7 @@ uploaded_file = st.file_uploader("📂 Upload Excel file with plot data", type=[
 
 if uploaded_file:
     # Read Excel file
-    df = pd.read_excel(uploaded_file)
+    df = pd.read_csv(uploaded_file)
 
     # Clean column names for safety
     df.columns = df.columns.str.strip()
