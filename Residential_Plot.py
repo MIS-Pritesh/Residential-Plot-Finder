@@ -60,23 +60,49 @@ if selected_plots:
 
     for idx, row in result_df.iterrows():
         st.markdown(f"### 🏷️ Plot NO: {row['NO']}")
-        st.markdown(f"""
-        **Net Plot Area**  
-        - SQ.MTR: {row['NET PLOT AREA IN SQ.FEET'] / 10.7639:.2f}  
-        - SQ.YDS: {row['NET PLOT AREA IN SQ.FEET'] / 9.0:.2f}  
-        - SQ.FEET: {row['NET PLOT AREA IN SQ.FEET']:.2f}
-
-        **BUILT UP AREA**  
-        - SQ.MTR: {row['BUILT UP AREA IN SQ.FEET'] / 10.7639:.2f}  
-        - SQ.YDS: {row['BUILT UP AREA IN SQ.FEET'] / 9.0:.2f}  
-        - SQ.FEET: {row['BUILT UP AREA IN SQ.FEET']:.2f}
-
-        **TOTAL PLOT AREA**  
-        - SQ.MTR: {row['TOTAL PLOT AREA IN SQ. FEET'] / 10.7639:.2f}  
-        - SQ.YDS: {row['TOTAL PLOT AREA IN SQ. FEET'] / 9.0:.2f}  
-        - SQ.FEET: {row['TOTAL PLOT AREA IN SQ. FEET']:.2f}
-
-        **RATE (1500 * 900)**: ₹{row[rate_col]:,.0f}  
-        **9% Pricing Discount (1350 * 810)**: ₹{row['9 % Pricing Discount Rates ( 1350 * 810 )']:,.0f}  
-        """)
+    
+        # Extract area in sq.ft.
+        net_sqft = row['NET PLOT AREA IN SQ.FEET']
+        built_sqft = row['BUILT UP AREA IN SQ.FEET']
+        total_sqft = row['TOTAL PLOT AREA IN SQ. FEET']
+    
+        # Convert to SQ.MTR and SQ.YDS
+        def convert_area(sqft):
+            sqmt = sqft / 10.7639
+            sqyd = sqft / 9.0
+            return sqmt, sqyd, sqft
+    
+        net_sqmt, net_sqyd, net_sqft = convert_area(net_sqft)
+        built_sqmt, built_sqyd, built_sqft = convert_area(built_sqft)
+        total_sqmt, total_sqyd, total_sqft = convert_area(total_sqft)
+    
+        # Create 3 side-by-side columns
+        col1, col2, col3 = st.columns(3)
+    
+        with col1:
+            st.subheader("Net Plot Area")
+            st.write(f"SQ.MTR: **{net_sqmt:.2f}**")
+            st.write(f"SQ.YDS: **{net_sqyd:.2f}**")
+            st.write(f"SQ.FEET: **{net_sqft:.2f}**")
+    
+        with col2:
+            st.subheader("Built Up Area")
+            st.write(f"SQ.MTR: **{built_sqmt:.2f}**")
+            st.write(f"SQ.YDS: **{built_sqyd:.2f}**")
+            st.write(f"SQ.FEET: **{built_sqft:.2f}**")
+    
+        with col3:
+            st.subheader("Total Plot Area")
+            st.write(f"SQ.MTR: **{total_sqmt:.2f}**")
+            st.write(f"SQ.YDS: **{total_sqyd:.2f}**")
+            st.write(f"SQ.FEET: **{total_sqft:.2f}**")
+    
         st.markdown("---")
+    
+        # Pricing Section
+        rate = row['RATE (1500)*(900)']
+        discounted_rate = row['9 % Pricing Discount Rates ( 1350 * 810 )']
+    
+        st.write(f"💰 **RATE (1500 × 900):** ₹{rate:,.0f}")
+        st.write(f"💸 **9% Pricing Discount (1350 × 810):** ₹{discounted_rate:,.0f}")
+        st.markdown("----")
