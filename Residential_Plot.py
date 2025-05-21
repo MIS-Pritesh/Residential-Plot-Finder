@@ -117,9 +117,9 @@ st.success(f"✅ {len(filtered_df)} plot(s) match your criteria.")
 if not filtered_df.empty:
     st.dataframe(filtered_df[[
         "NO",
-        "NET PLOT AREA IN SQ.FEET",
-        "BUILT UP AREA IN SQ.FEET",
         "TOTAL PLOT AREA IN SQ. FEET",
+        "TOTAL PLOT AREA IN SQ. MTR",
+        "TOTAL PLOT AREA IN SQ. YDS",
         "RATE (1500)*(900)",
         "9 % Pricing Discount Rates ( 1350 * 810 )"
     ]])
