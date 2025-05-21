@@ -1,49 +1,115 @@
-import streamlit as st
-import pandas as pd
-
-st.set_page_config(layout="wide")
-st.title("🏡 Residential Plot Finder by Budget Range")
-
-# Load data
-@st.cache_data
-def load_data():
-    url = "https://raw.githubusercontent.com/MIS-Pritesh/Residential-Plot-Finder/main/Area%20Table%20of%20the%20Royaltan.csv"
-    df = pd.read_csv(url)
-    df.columns = df.columns.str.strip()
-    return df
-
-df = load_data()
+# ---------------------------
+# SECTION 0 – extra helper columns (add once, right after you load df)
+# ---------------------------
+# These extra columns let us filter area in the three unit systems
+df["TOTAL_SQFT"] = df["TOTAL PLOT AREA IN SQ. FEET"]
+df["TOTAL_SQMT"] = df["TOTAL_SQFT"] / 10.7639           # square-metres
+df["TOTAL_SQYD"] = df["TOTAL_SQFT"] / 9.0               # square-yards
 
 # ---------------------------
-# SECTION 1: Budget Filter
+# SECTION 1 – Flexible Filters
 # ---------------------------
-st.markdown("### 💸 Enter Client's Budget Range (INR)")
-min_budget = st.number_input("Minimum Budget", min_value=0, value=0)
-max_budget = st.number_input("Maximum Budget", min_value=1, value=10000000)
+st.markdown("### ⚙️ Choose filter(s)")
 
-rate_col = "RATE (1500)*(900)"
-status_col = "Status"
+col_chk1, col_chk2, col_chk3, col_chk4 = st.columns(4)
+with col_chk1:
+    use_budget = st.checkbox("Budget (₹)", value=True)
+with col_chk2:
+    use_meter  = st.checkbox("Meter (㎡)")
+with col_chk3:
+    use_yard   = st.checkbox("Yard (yd²)")
+with col_chk4:
+    use_feet   = st.checkbox("Feet (ft²)")
 
-if max_budget > min_budget:
-    filtered_df = df[
-        (df[rate_col] >= min_budget) &
-        (df[rate_col] <= max_budget) &
-        (df[status_col].str.lower() != 'sold out')
-    ]
+# ----  collect the user limits ------------------------------------------------
+filters = []        # we’ll AND these together later
 
-    st.success(f"✅ {len(filtered_df)} Plot(s) Available in Budget ₹{min_budget:,} - ₹{max_budget:,}")
+if use_budget:
+    col_b1, col_b2 = st.columns(2)
+    with col_b1:
+        min_budget = st.number_input("Min Budget (₹)", 0, step=10_000,
+                                     value=0, key="min_budget")
+    with col_b2:
+        max_budget = st.number_input("Max Budget (₹)", 1, step=10_000,
+                                     value=10_000_000, key="max_budget")
 
-    if not filtered_df.empty:
-        st.dataframe(filtered_df[['NO',
-                                  'NET PLOT AREA IN SQ.FEET',
-                                  'BUILT UP AREA IN SQ.FEET',
-                                  'TOTAL PLOT AREA IN SQ. FEET',
-                                  rate_col,
-                                  '9 % Pricing Discount Rates ( 1350 * 810 )']])
+    if max_budget > min_budget:
+        filters.append(
+            (df["RATE (1500)*(900)"] >= min_budget) &
+            (df["RATE (1500)*(900)"] <= max_budget)
+        )
     else:
-        st.warning("❌ No plots available in this budget range.")
+        st.warning("⚠️ Max budget must be larger than min budget.")
+
+if use_meter:
+    col_m1, col_m2 = st.columns(2)
+    with col_m1:
+        min_meter = st.number_input("Min Area (㎡)", 0.0, step=10.0,
+                                    value=0.0, key="min_meter")
+    with col_m2:
+        max_meter = st.number_input("Max Area (㎡)", 1.0, step=10.0,
+                                    value=5_000.0, key="max_meter")
+
+    if max_meter > min_meter:
+        filters.append(
+            (df["TOTAL_SQMT"] >= min_meter) & (df["TOTAL_SQMT"] <= max_meter)
+        )
+    else:
+        st.warning("⚠️ Max ㎡ must be larger than min ㎡.")
+
+if use_yard:
+    col_y1, col_y2 = st.columns(2)
+    with col_y1:
+        min_yard = st.number_input("Min Area (yd²)", 0.0, step=10.0,
+                                   value=0.0, key="min_yard")
+    with col_y2:
+        max_yard = st.number_input("Max Area (yd²)", 1.0, step=10.0,
+                                   value=6_000.0, key="max_yard")
+
+    if max_yard > min_yard:
+        filters.append(
+            (df["TOTAL_SQYD"] >= min_yard) & (df["TOTAL_SQYD"] <= max_yard)
+        )
+    else:
+        st.warning("⚠️ Max yd² must be larger than min yd².")
+
+if use_feet:
+    col_f1, col_f2 = st.columns(2)
+    with col_f1:
+        min_feet = st.number_input("Min Area (ft²)", 0.0, step=10.0,
+                                   value=0.0, key="min_feet")
+    with col_f2:
+        max_feet = st.number_input("Max Area (ft²)", 1.0, step=10.0,
+                                   value=50_000.0, key="max_feet")
+
+    if max_feet > min_feet:
+        filters.append(
+            (df["TOTAL_SQFT"] >= min_feet) & (df["TOTAL_SQFT"] <= max_feet)
+        )
+    else:
+        st.warning("⚠️ Max ft² must be larger than min ft².")
+
+# ---- apply all chosen filters & hide “Sold Out” plots ------------------------
+mask = (df["Status"].str.lower() != "sold out")
+for f in filters:
+    mask &= f
+
+filtered_df = df[mask]
+
+# ---- feedback & table --------------------------------------------------------
+st.success(f"✅ {len(filtered_df)} plot(s) match your criteria.")
+if not filtered_df.empty:
+    st.dataframe(filtered_df[[
+        "NO",
+        "NET PLOT AREA IN SQ.FEET",
+        "BUILT UP AREA IN SQ.FEET",
+        "TOTAL PLOT AREA IN SQ. FEET",
+        "RATE (1500)*(900)",
+        "9 % Pricing Discount Rates ( 1350 * 810 )"
+    ]])
 else:
-    st.info("ℹ️ Please enter a valid budget range.")
+    st.warning("❌ No plots match the selected filters.")
+
 
 # ---------------------------
 # SECTION 2: Manual Plot Detail Lookup (Independent)
