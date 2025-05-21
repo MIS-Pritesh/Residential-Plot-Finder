@@ -22,7 +22,7 @@ st.markdown("### 💸 Enter Client's Budget Range (INR)")
 min_budget = st.number_input("Minimum Budget", min_value=0, value=0)
 max_budget = st.number_input("Maximum Budget", min_value=0, value=10000000)
 
-if min_budget > 0 and max_budget > min_budget:
+if max_budget > min_budget:
     # Filter for available plots within budget range
     filtered_df = df[
         (df[rate_col] >= min_budget) &
