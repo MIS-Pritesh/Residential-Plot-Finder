@@ -13,7 +13,7 @@ import pandas as pd
 st.title("🏡 Residential Plot Finder")
 
 # File uploader
-uploaded_file = st.file_uploader("📂 Upload Excel file with plot data", type=["xlsx", "xls"])
+uploaded_file = st.file_uploader("📂 Upload Excel file with plot data", type=["csv"])
 
 if uploaded_file:
     # Read Excel file
