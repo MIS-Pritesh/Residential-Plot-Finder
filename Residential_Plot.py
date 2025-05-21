@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 
+st.set_page_config(layout="wide")
 st.title("🏡 Residential Plot Finder by Budget Range")
 
 # Load the CSV directly from GitHub
@@ -13,7 +14,7 @@ def load_data():
 
 df = load_data()
 
-# Rename for easier reference (optional)
+# Rename for easier reference
 rate_col = "RATE (1500)*(900)"
 status_col = "Status"
 
@@ -40,38 +41,40 @@ if max_budget > min_budget:
                                   rate_col,
                                   '9 % Pricing Discount Rates ( 1350 * 810 )',
                                   status_col]])
+
+        # --- Input Number of Plots to Display Detailed View ---
+        st.markdown("---")
+        st.markdown("### 🔍 View Detailed Info for Multiple Plots")
+
+        num_plots = st.number_input("Enter Number of Plots to Show", min_value=1, max_value=len(filtered_df), step=1)
+
+        if num_plots:
+            selected_plots = filtered_df.head(num_plots)
+
+            for idx, row in selected_plots.iterrows():
+                st.markdown(f"### 🏷️ Plot NO: {row['NO']}")
+                st.markdown(f"""
+                **Net Plot Area**  
+                - SQ.MTR: {row['NET PLOT AREA IN SQ.FEET'] / 10.7639:.2f}  
+                - SQ.YDS: {row['NET PLOT AREA IN SQ.FEET'] / 9.0:.2f}  
+                - SQ.FEET: {row['NET PLOT AREA IN SQ.FEET']:.2f}
+
+                **BUILT UP AREA**  
+                - SQ.MTR: {row['BUILT UP AREA IN SQ.FEET'] / 10.7639:.2f}  
+                - SQ.YDS: {row['BUILT UP AREA IN SQ.FEET'] / 9.0:.2f}  
+                - SQ.FEET: {row['BUILT UP AREA IN SQ.FEET']:.2f}
+
+                **TOTAL PLOT AREA**  
+                - SQ.MTR: {row['TOTAL PLOT AREA IN SQ. FEET'] / 10.7639:.2f}  
+                - SQ.YDS: {row['TOTAL PLOT AREA IN SQ. FEET'] / 9.0:.2f}  
+                - SQ.FEET: {row['TOTAL PLOT AREA IN SQ. FEET']:.2f}
+
+                **RATE (1500 * 900)**: ₹{row[rate_col]:,.0f}  
+                **9% Pricing Discount (1350 * 810)**: ₹{row['9 % Pricing Discount Rates ( 1350 * 810 )']:,.0f}  
+                """)
+                st.markdown("---")
+
     else:
         st.warning("❌ No plots available in this budget range.")
 else:
     st.info("ℹ️ Please enter a valid budget range to see available plots.")
-    # --- Input Number of Plots to Display Detailed View ---
-st.markdown("---")
-st.markdown("### 🔍 View Detailed Info for Multiple Plots")
-
-num_plots = st.number_input("Enter Number of Plots to Show", min_value=1, max_value=len(filtered_df), step=1)
-
-if num_plots:
-    selected_plots = filtered_df.head(num_plots)
-
-for idx, row in selected_plots.iterrows():
-    st.markdown(f"### 🏷️ Plot NO: {row['NO']}")
-    st.markdown(f"""
-    **Net Plot Area**  
-    - SQ.MTR: {row.get('NET PLOT AREA IN SQ.FEET', 'N/A') / 10.7639:.2f}  
-    - SQ.YDS: {row.get('NET PLOT AREA IN SQ.FEET', 'N/A') / 9.0:.2f}  
-    - SQ.FEET: {row.get('NET PLOT AREA IN SQ.FEET', 'N/A'):.2f}
-
-    **BUILT UP AREA**  
-    - SQ.MTR: {row.get('BUILT UP AREA IN SQ.FEET', 'N/A') / 10.7639:.2f}  
-    - SQ.YDS: {row.get('BUILT UP AREA IN SQ.FEET', 'N/A') / 9.0:.2f}  
-    - SQ.FEET: {row.get('BUILT UP AREA IN SQ.FEET', 'N/A'):.2f}
-
-    **TOTAL PLOT AREA**  
-    - SQ.MTR: {row.get('TOTAL PLOT AREA IN SQ. FEET', 'N/A') / 10.7639:.2f}  
-    - SQ.YDS: {row.get('TOTAL PLOT AREA IN SQ. FEET', 'N/A') / 9.0:.2f}  
-    - SQ.FEET: {row.get('TOTAL PLOT AREA IN SQ. FEET', 'N/A'):.2f}
-
-    **RATE (1500 * 900)**: ₹{row.get(rate_col, 'N/A'):,.0f}  
-    **9% Pricing Discount (1350 * 810)**: ₹{row.get('9 % Pricing Discount Rates ( 1350 * 810 )', 'N/A'):,.0f}  
-    """)
-    st.markdown("---")
