@@ -102,6 +102,6 @@ if selected_plots:
         rate = row['RATE (1500)*(900)']
         discounted_rate = row['9 % Pricing Discount Rates ( 1350 * 810 )']
     
-        st.write(f"💰 **RATE (1500 × 900):** ₹{rate:,.0f}")
-        st.write(f"💸 **9% Pricing Discount (1350 × 810):** ₹{discounted_rate:,.0f}")
+        st.write(f" **RATE (1500 × 900):** ₹{rate:,.0f}")
+        st.write(f" **9% Pricing Discount (1350 × 810):** ₹{discounted_rate:,.0f}")
         st.markdown("----")
