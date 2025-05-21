@@ -1,5 +1,14 @@
 import streamlit as st
 import pandas as pd
+# Inject custom CSS to increase checkbox font size
+st.markdown("""
+    <style>
+        /* Applies to all checkbox labels */
+        label[data-testid="stCheckboxLabel"] > div {
+            font-size: 18px !important;
+        }
+    </style>
+""", unsafe_allow_html=True)
 
 st.set_page_config(layout="wide")
 st.title("🏡 Residential Plot Finder by Budget Range")
