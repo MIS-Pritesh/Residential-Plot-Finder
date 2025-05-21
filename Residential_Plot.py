@@ -40,17 +40,6 @@ with col_chk4:
 
 # ----  collect the user limits ------------------------------------------------
 filters = []        # we’ll AND these together later
-import io
-
-if not filtered_df.empty:
-    buffer = io.BytesIO()
-    filtered_df.to_excel(buffer, index=False, sheet_name='Filtered Data')
-    st.download_button(
-        label="📥 Download Results as Excel",
-        data=buffer,
-        file_name="filtered_plots.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
 
 if use_budget:
     col_b1, col_b2 = st.columns(2)
