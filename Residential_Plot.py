@@ -20,7 +20,7 @@ status_col = "Status"
 # User input: min and max budget
 st.markdown("### 💸 Enter Client's Budget Range (INR)")
 min_budget = st.number_input("Minimum Budget", min_value=0, value=0)
-max_budget = st.number_input("Maximum Budget", min_value=0, value=10000000)
+max_budget = st.number_input("Maximum Budget", min_value=1, value=1)
 
 if max_budget > min_budget:
     # Filter for available plots within budget range
