@@ -22,7 +22,8 @@ df["TOTAL_SQYD"] = df["TOTAL PLOT AREA IN SQ. YDS"]
 # Sidebar Clear Filter Button
 # ---------------------------------
 if st.button("🧹 Clear All Filters"):
-    st.experimental_rerun()
+    st.cache_data.clear()
+    st.rerun()
 
 # ---------------------------------
 # Filters Section
@@ -108,7 +109,7 @@ if not filtered_df.empty:
     # Download Excel
     # ---------------------------------
     output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="xlsxwriter") as writer:
+    with pd.ExcelWriter(output, engine="openpyxl") as writer:
         filtered_df.to_excel(writer, index=False, sheet_name="Filtered_Plots")
         writer.save()
         st.download_button(
