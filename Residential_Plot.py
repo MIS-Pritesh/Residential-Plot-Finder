@@ -34,6 +34,8 @@ if max_budget > min_budget:
 
     if not filtered_df.empty:
         st.dataframe(filtered_df[['NO',
+                                  'NET PLOT AREA IN SQ.FEET',
+                                  'BUILT UP AREA IN SQ.FEET',
                                   'TOTAL PLOT AREA IN SQ. FEET',
                                   rate_col,
                                   '9 % Pricing Discount Rates ( 1350 * 810 )',
