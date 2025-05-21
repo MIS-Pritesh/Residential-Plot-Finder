@@ -121,8 +121,6 @@ if not filtered_df.empty:
             file_name="filtered_plots.csv",
             mime="text/csv"
         )
-
-        )
 else:
     st.warning("❌ No plots match the selected filters.")
 
