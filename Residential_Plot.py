@@ -39,8 +39,7 @@ if max_budget > min_budget:
                                   'BUILT UP AREA IN SQ.FEET',
                                   'TOTAL PLOT AREA IN SQ. FEET',
                                   rate_col,
-                                  '9 % Pricing Discount Rates ( 1350 * 810 )',
-                                  status_col]])
+                                  '9 % Pricing Discount Rates ( 1350 * 810 )']])
     else:
         st.warning("❌ No plots available in this budget range.")
 else:
