@@ -109,14 +109,19 @@ if not filtered_df.empty:
     # Download Excel
     # ---------------------------------
     output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        filtered_df.to_excel(writer, index=False, sheet_name="Filtered_Plots")
-        writer.save()
+    import io
+
+    if not filtered_df.empty:
+        # Create download button for Excel (as CSV fallback)
+        buffer = io.StringIO()
+        filtered_df.to_csv(buffer, index=False)
         st.download_button(
             label="📥 Download Filtered Data as Excel",
-            data=output.getvalue(),
-            file_name="filtered_plots.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            data=buffer.getvalue(),
+            file_name="filtered_plots.csv",
+            mime="text/csv"
+        )
+
         )
 else:
     st.warning("❌ No plots match the selected filters.")
