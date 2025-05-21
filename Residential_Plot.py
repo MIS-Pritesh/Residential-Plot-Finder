@@ -25,20 +25,32 @@ df["TOTAL_SQYD"] = df["TOTAL PLOT AREA IN SQ. YDS"]              # square-yards
 # ---------------------------
 # SECTION 1 – Flexible Filters
 # ---------------------------
-st.markdown("### ⚙️ Choose filter(s)")
+st.markdown("### 🔎 Filter Your Dream Plot")
 
 col_chk1, col_chk2, col_chk3, col_chk4 = st.columns(4)
 with col_chk1:
-    use_budget = st.checkbox("Budget (₹)", value=True)
+    use_budget = st.checkbox("**<span style='font-size:18px'>Budget (₹)</span>**", value=True, unsafe_allow_html=True)
 with col_chk2:
-    use_meter  = st.checkbox("Meter (㎡)")
+    use_meter = st.checkbox("**<span style='font-size:18px'>Meter (㎡)</span>**", unsafe_allow_html=True)
 with col_chk3:
-    use_yard   = st.checkbox("Yard (yd²)")
+    use_yard = st.checkbox("**<span style='font-size:18px'>Yard (yd²)</span>**", unsafe_allow_html=True)
 with col_chk4:
-    use_feet   = st.checkbox("Feet (ft²)")
+    use_feet = st.checkbox("**<span style='font-size:18px'>Feet (ft²)</span>**", unsafe_allow_html=True)
+
 
 # ----  collect the user limits ------------------------------------------------
 filters = []        # we’ll AND these together later
+import io
+
+if not filtered_df.empty:
+    buffer = io.BytesIO()
+    filtered_df.to_excel(buffer, index=False, sheet_name='Filtered Data')
+    st.download_button(
+        label="📥 Download Results as Excel",
+        data=buffer,
+        file_name="filtered_plots.xlsx",
+        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
 
 if use_budget:
     col_b1, col_b2 = st.columns(2)
