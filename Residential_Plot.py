@@ -1,3 +1,19 @@
+import streamlit as st
+import pandas as pd
+
+st.set_page_config(layout="wide")
+st.title("🏡 Residential Plot Finder by Budget Range")
+
+# Load data
+@st.cache_data
+def load_data():
+    url = "https://raw.githubusercontent.com/MIS-Pritesh/Residential-Plot-Finder/main/Area%20Table%20of%20the%20Royaltan.csv"
+    df = pd.read_csv(url)
+    df.columns = df.columns.str.strip()
+    return df
+
+df = load_data()
+
 # ---------------------------
 # SECTION 0 – extra helper columns (add once, right after you load df)
 # ---------------------------
@@ -109,7 +125,6 @@ if not filtered_df.empty:
     ]])
 else:
     st.warning("❌ No plots match the selected filters.")
-
 
 # ---------------------------
 # SECTION 2: Manual Plot Detail Lookup (Independent)
